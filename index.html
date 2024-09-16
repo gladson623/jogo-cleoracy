@@ -1,20 +1,76 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <title>Você decide o futuro da IA</title>
+    <title>Craft Game</title>
+    <link rel="stylesheet" href="styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="caixa-principal">
-        <h1>Você decide o futuro da IA</h1>
-        <div class="caixa-perguntas"></div>
-        <div class="caixa-alternativas"></div>
-        <div class="caixa-resultado">
-            <p class="texto-resultado"></p>
-        </div>
+    <h1>Mini Craft Game</h1>
+    <!-- Tela de início -->
+<div id="start-screen">
+    <h1>Bem-vindo ao Jogo de Combinações</h1>
+    <input type="text" id="player-name" placeholder="Digite seu nome">
+    <button id="start-game">Começar o Jogo</button>
+</div>
+
+<!-- Tela de jogo -->
+<div id="game-screen" style="display:none;">
+    <div id="timer">Tempo: <span id="time-left">30</span> segundos</div>
+    <div id="score">Pontuação: <span id="player-score">0</span></div>
+  <div id="game-board">
+        <div class="element" draggable="true" data-element="fire">🔥 Fire</div>
+        <div class="element" draggable="true" data-element="water">💧 Water</div>
+        <div class="element" draggable="true" data-element="earth">🌍 Earth</div>
+        <div class="element" draggable="true" data-element="air">🌬️ Air</div>
     </div>
+    <div id="drop-zone" style="width: 100%; height: 300px; border: 1px solid black;"></div>
+    <div id="result">Result will be shown here.</div>
+    <ul id="created-elements"></ul>
+</div>
+<!-- Modal para exibir informações sobre o elemento criado -->
+<!-- Modal -->
+<div class="modal fade" id="elementModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Novo Elemento Criado</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- O conteúdo do modal será inserido dinamicamente aqui -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Tela de final de jogo -->
+<div id="end-screen" style="display:none;">
+    <h2>Fim do Jogo!</h2>
+    <p id="final-score">Sua pontuação final: 0</p>
+    <button id="restart-game">Jogar Novamente</button>
+    <button id="logout">Deslogar</button>
+    <div id="high-scores">
+        <h3>Ranking</h3>
+        <ul id="high-scores-list"></ul> <!-- Lista para exibir o ranking -->
+    </div>
+</div>
+   <!-- Bootstrap CSS -->
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!-- jQuery e Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
     <script src="script.js"></script>
 </body>
 </html>
