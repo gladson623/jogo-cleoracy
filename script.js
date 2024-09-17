@@ -1,27 +1,49 @@
 const elements = {
-    sun: '☀️',      // Sol
-    water: '💧',    // Água
-    earth: '🌍',    // Terra
-    air: '🌬️'      // Ar
+    sun: { name: 'sun', icon: '☀️' },      // Sol
+    water: { name: 'water', icon: '💧' },    // Água
+    earth: { name: 'earth', icon: '🌍' },    // Terra
+    air: { name: 'air', icon: '🌬️' }       // Ar
 };
 
 const combinations = {
-    'sun+water': 'Fotossíntese 🌿',
-    'earth+water': 'Mangue 🌱',
-    'sun+earth': 'Ciclo do Carbono ♻️',
-    'water+air': 'Chuva 🌧️',
-    'sun+air': 'Vento Solar 💨',
-    'air+earth': 'Erosão 🌪️',
-    'earth+plant': 'Floresta 🌲'
+    'sun+water': { name: 'Vapor', icon: '☁️' },
+    'earth+air': { name: 'Poeira', icon: '🌪️' },
+    'sun+air': { name: 'Energia', icon: '⚡' },
+    'water+earth': { name: 'Lama', icon: '🌿' },
+    'sun+earth': { name: 'Lava', icon: '🌋' },
+    'water+air': { name: 'Tempestade', icon: '⛈️' },
+    'air+water': { name: 'Gelo', icon: '❄️' },
+    'air+sun': { name: 'Fumaça', icon: '💨' },
+    'lava+water': { name: 'Pedra', icon: '🪨' },
+    'sun+poeira': { name: 'Cinzas', icon: '🌫️' },
+    'water+lava': { name: 'Obsidiana', icon: '🖤' },
+    'air+lama': { name: 'Pântano', icon: '🐸' },
+    'sun+vapor': { name: 'Onda de Calor', icon: '🔥' },
+    'water+energia': { name: 'Elétrico', icon: '⚡💧' },
+    'earth+vapor': { name: 'Gêiser', icon: '🌋' },
+    'air+tempestade': { name: 'Tornado', icon: '🌪️' },
+    'sun+gelo': { name: 'Fogo Gélido', icon: '🔥❄️' },
+    'water+obsidiana': { name: 'Cristal', icon: '💎' },
+    'air+obsidiana': { name: 'Fragmento', icon: '🌌' },
+    'earth+lava': { name: 'Vulcão', icon: '🌋' },
+    'lama+vapor': { name: 'Termas', icon: '🌊' },
+    'poeira+lava': { name: 'Rocha Derretida', icon: '🌑' },
+    'vapor+lava': { name: 'Plasma', icon: '🌩️' },
+    'air+pântano': { name: 'Miasma', icon: '💀' },
+    'earth+cristal': { name: 'Pedra Preciosa', icon: '💎' },
+    'sun+obsidiana': { name: 'Obsidiana Derretida', icon: '🖤🔥' },
+    'water+fragmento': { name: 'Cristal de Gelo', icon: '❄️💎' },
+    'sun+gêiser': { name: 'Fonte de Magma', icon: '🔥🌋' },
+    'water+tornado': { name: 'Furacão', icon: '🌪️💧' },
+    'air+gêiser': { name: 'Jato de Vapor', icon: '🌫️' }
 };
 
 const badCombinations = {
-    'earth+fire': 'Queimada 🔥',
-    'water+earth': 'Deslizamento de Terra 🌧️',
-    'pollution+water': 'Contaminação 🌫️',
-    'erosion+deforestation': 'Desertificação 🏜️'
+    'earth+fire': { name: 'Queimada', icon: '🔥' },
+    'water+earth': { name: 'Deslizamento de Terra', icon: '🌧️' },
+    'pollution+water': { name: 'Contaminação', icon: '🌫️' },
+    'erosion+deforestation': { name: 'Desertificação', icon: '🏜️' }
 };
-
 
 
 let createdElements = new Set();
@@ -49,6 +71,13 @@ const highScoresList = document.getElementById('high-scores-list'); // Lista de 
 function startGame() {
     const playerName = playerNameInput.value.trim();
     if (playerName) {
+        
+            if(playerName == 'comando:limparcache'){
+                sessionStorage.clear()
+                alert('Comando executado com sucesso');
+                return
+            }
+        
         const highScores = getHighScores();
         const playerExists = highScores.some(scoreEntry => scoreEntry.player === playerName);
 
@@ -64,6 +93,9 @@ function startGame() {
         startScreen.style.display = 'none';
         gameScreen.style.display = 'block';
         startTimer();
+        pauseTimer()
+        showModal('Instruções do Jogo', false)
+        $('#elementModal').modal('show')
     } else {
         alert('Por favor, insira seu nome.');
     }
@@ -71,7 +103,7 @@ function startGame() {
 
 function startTimer() {
     interval = setInterval(() => {
-        timer--;
+        timer--
         timerElement.textContent = timer;
 
         if (timer <= 0) {
@@ -251,11 +283,11 @@ function handleTouchEnd(event) {
 
 
 function combineElements(element1, element2) {
+   
     const combination = `${element1}+${element2}`;
     const reverseCombination = `${element2}+${element1}`;
-
+    
     let result = null;
-console.log(combination, reverseCombination)
     // Verifica se a combinação é uma combinação boa ou ruim
     if (combinations[combination]) {
         result = combinations[combination];
@@ -266,11 +298,13 @@ console.log(combination, reverseCombination)
     } else if (badCombinations[reverseCombination]) {
         result = badCombinations[reverseCombination];
     }
-     console.log(combinations, badCombinations, combination);
+     console.log(JSON.stringify(createdElements))
     // Agora tratamos o resultado
     if (result && !createdElements.has(result)) {
         createdElements.add(result);
+        result = result.name +' '+ result.icon;
         createNewElement(result);
+
 
         // Se for uma combinação ruim, subtrai tempo e mostra modal para combinação ruim
         if (badCombinations[combination] || badCombinations[reverseCombination]) {
@@ -284,7 +318,7 @@ console.log(combination, reverseCombination)
 
         increaseScore();  // Aumenta pontuação após criar novo elemento
     } else if (createdElements.has(result)) {
-        resultDiv.textContent = `${result} já foi criado!`;
+        resultDiv.textContent = `${result.name +' '+ result.icon} já foi criado!`;
     } else {
         resultDiv.textContent = 'Nenhuma combinação válida!';
     }
@@ -391,32 +425,38 @@ document.querySelectorAll('.element').forEach(element => {
 function subtractTime() {
     timer -= 3;
 }
-function showModal(element, isBadElement) {
-    // Definir o título e o conteúdo do modal
+function showModal(content, isBadElement) {
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
 
-    if (isBadElement) {
-        modalTitle.textContent = `Elemento Ruim Criado: ${element}`;
-        modalBody.innerHTML = `<p>Esse elemento é prejudicial e resultou em uma penalidade de tempo!</p>`;
-        document.querySelector('.modal-content').style.backgroundColor = '#f8d7da'; // Cor de fundo vermelha
+    if (content === 'Instruções do Jogo') {
+        modalTitle.textContent = 'Instruções do Jogo';
+        modalBody.innerHTML = `
+            <p>Bem-vindo ao Jogo de Combinações! Este jogo tem como intuito ensinar sobre o impacto de nossas ações no mundo.</p>
+            <p>O tempo de vida do mundo está representado pelo cronômetro. Ao criar algo bom, o tempo aumenta em 3 segundos. Ao criar algo ruim, o tempo diminui em 3 segundos.</p>
+        `;
+        document.querySelector('.modal-content').style.backgroundColor = '#fff'; // Cor padrão
     } else {
-        modalTitle.textContent = `Novo Elemento Criado: ${element}`;
-        modalBody.innerHTML = `<p>Você descobriu um novo elemento. Bom trabalho!</p>`;
-        document.querySelector('.modal-content').style.backgroundColor = '#d4edda'; // Cor de fundo verde
+        if (isBadElement) {
+            modalTitle.textContent = `Elemento Ruim Criado: ${content}`;
+            modalBody.innerHTML = `<p>Esse elemento é prejudicial e resultou em uma penalidade de tempo!</p>`;
+            document.querySelector('.modal-content').style.backgroundColor = '#f8d7da'; // Cor vermelha
+        } else {
+            modalTitle.textContent = `Novo Elemento Criado: ${content}`;
+            modalBody.innerHTML = `<p>Você descobriu um novo elemento. Bom trabalho!</p>`;
+            document.querySelector('.modal-content').style.backgroundColor = '#d4edda'; // Cor verde
+        }
     }
 
-    // Pausar o cronômetro enquanto o modal estiver aberto
     pauseTimer();
 
-    // Mostrar o modal com o Bootstrap
     $('#elementModal').modal('show');
 
-    // Adicionar um listener para retomar o temporizador quando o modal for fechado
     $('#elementModal').on('hidden.bs.modal', function () {
-        resumeTimer();
+        resumeTimer(); // Retoma o temporizador quando o modal é fechado
     });
 }
+
 
 // Adicionar eventos de clique aos botões
 document.getElementById('start-game').addEventListener('click', startGame);
